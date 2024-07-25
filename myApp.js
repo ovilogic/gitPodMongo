@@ -13,7 +13,7 @@ const personSchema = new mongoose.Schema({
 Person = mongoose.model('Person', personSchema)
 
 const createAndSavePerson = (done) => {
-  const ovi = new Person({name: "Ovi", age: 12, favoriteFoods: ["ribs", "shrimp"]});
+  const ovi = new Person({name: "Mary", age: 12, favoriteFoods: ["ribs", "shrimp"]});
   ovi.save(function(err, data) {
     if (err) return done(err);
     done(null , data);
@@ -163,25 +163,56 @@ const removeById = (personId, done) => {
   });
 };
 
-removeById("66a2c3ea0652f02f284aea46", (err, data) => {
-    if (err) {
-      console.log("Person with this id not found", err)
-    } else {
-      console.log("That's the last we'll see of ", data)
-    }
-  });
+// removeById("66a2c3ea0652f02f284aea46", (err, data) => {
+//     if (err) {
+//       console.log("Person with this id not found", err)
+//     } else {
+//       console.log("That's the last we'll see of ", data)
+//     }
+//   });
 
 const removeManyPeople = (done) => {
   const nameToRemove = "Mary";
-
-  done(null /*, data*/);
+  Person.remove({name: nameToRemove}, (err, data) => {
+    if (err) {
+      return done(err)
+    } else {
+    done(null, data)
+    }
+  });
 };
+
+// removeManyPeople(
+//   (err, data) => {
+//     if (err) {
+//       console.log("Person with this name not found", err)
+//     } else {
+//       console.log("That's the last we'll see of ", data)
+//     }
+//   });
 
 const queryChain = (done) => {
   const foodToSearch = "burrito";
-
-  done(null /*, data*/);
+  Person.find({favoriteFoods: foodToSearch})
+  .sort({name: 1})
+  .limit(2)
+  .select({age: false})
+  .exec((err, data) => {
+    if (err) {
+      return done(err)
+    } else {
+    done(null, data)
+    }
+  });
 };
+
+queryChain((err, data) => {
+  if (err) {
+    console.log("Person with this name not found", err)
+  } else {
+    console.log("That's what the query brought in: ", data)
+  };
+  });
 
 /** **Well Done !!**
 /* You completed these challenges, let's go celebrate !
