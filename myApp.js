@@ -118,23 +118,58 @@ const findEditThenSave = (personId, done) => {
     });
 };
 
-findEditThenSave("66a28749e20fcf0cc7372b42", (err, data) => {
-  if (err) {
-    console.log("Person with this id not found", err)
-  } else {
-    console.log("This person was found: ", data)
-  }
-});
+// findEditThenSave("66a28749e20fcf0cc7372b42", (err, data) => {
+//   if (err) {
+//     console.log("Person with this id not found", err)
+//   } else {
+//     console.log("This person was found: ", data)
+//   }
+// });
 
 const findAndUpdate = (personName, done) => {
   const ageToSet = 20;
-
-  done(null /*, data*/);
+  const found = Person.findOneAndUpdate({name: personName},
+    {age: ageToSet},
+    {new: true},
+    (err, data) => {
+    if (err) {
+      console.log("Person with this name not found", err)
+    } else {
+    data["age"] = 20
+    data.save(function(err, data) {
+      if (err) return done(err);
+      done(null , data);
+    });
+    }
+  });
 };
+
+// findAndUpdate("Liam", (err, data) => {
+//     if (err) {
+//       console.log("Person with this id not found", err)
+//     } else {
+//       console.log("This person was found: ", data)
+//     }
+//   });
 
 const removeById = (personId, done) => {
-  done(null /*, data*/);
+  Person.findByIdAndRemove(personId,
+    (err, data) => {
+    if (err) {
+      return done(err)
+    } else {
+    done(null, data)
+    }
+  });
 };
+
+removeById("66a2c3ea0652f02f284aea46", (err, data) => {
+    if (err) {
+      console.log("Person with this id not found", err)
+    } else {
+      console.log("That's the last we'll see of ", data)
+    }
+  });
 
 const removeManyPeople = (done) => {
   const nameToRemove = "Mary";
